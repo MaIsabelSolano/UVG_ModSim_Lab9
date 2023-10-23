@@ -18,7 +18,6 @@ class Environment:
         self.x_goal = self.x_screen
         self.y_goal = self.y_screen/2
 
-
         # setup de pygame
         pygame.init()
 
@@ -33,6 +32,11 @@ class Environment:
                     running = False
 
             screen.fill("#78e87e")
+
+            # pos_goal = (self.x_goal, self.y_goal, 10, 10)
+            # pygame.draw.rect(screen, "black", pos_goal, 5)
+            pos_goal = (self.x_goal, self.y_goal, 100, 5)
+            pygame.draw.rect(screen, "black", pos_goal, 6)
             
             pos_ball = pygame.Vector2(self.x_ball, self.y_ball)
             pygame.draw.circle(screen, "red", pos_ball, 5)
@@ -45,3 +49,13 @@ class Environment:
             clock.tick(60)
 
         pygame.quit()
+
+    def diffuse(self): 
+        0
+
+    
+    def distace(self):
+        0
+
+    def strenght(self):
+        0
