@@ -18,6 +18,11 @@ class Environment:
         self.x_goal = self.x_screen - 10
         self.y_goal = self.y_screen/2 - 50
 
+        self.xf_ball = self.x_ball
+        self.yf_ball = self.y_ball
+
+
+
         # setup de pygame
         pygame.init()
 
@@ -48,6 +53,8 @@ class Environment:
 
             clock.tick(60)
             self.diffuse()
+            if self.x_ball != self.xf_ball or self.y_ball != self.yf_ball:
+                self.moveBall()
             
 
 
@@ -61,6 +68,7 @@ class Environment:
             self.Move()
         else:
             # patear la pelota en dirección a la portería
+            # self.kick()
             pass
 
     
@@ -83,6 +91,17 @@ class Environment:
         self.y_player += v*dy
 
 
+    # Lógica para animar el movimiento de la pelota
+    def moveBall(self):
+        pass
 
-    def strenght(self):
-        0
+    # Desencadena el movimiento de la pelota
+    def kick(self):
+        # calcular la fuerza del disparo - Debe ser por default al menos tan rápido como el máximo del jugador o más, sino el jugador alcanza la pelota y la patea repetidamente a cada rato
+        # calcular la dirección del disparo - esto puede ser fijo, pues sabemos siempre dónde está la portería
+        # imponer las coordenas finales del disparo
+        pass
+
+    # Lógica para calcular la fuerza del disparo de la pelota en relación a la distancia entre el jugador y la portería
+    def strength(self):
+        pass
