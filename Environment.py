@@ -164,19 +164,22 @@ class Environment:
         # imponer las coordenas finales del disparo
         pass
 
+
+    def defuzzify_strength(self, distance):
+        if distance > 200:
+            return "lejano"
+        elif distance > 100:
+            return "medio"
+        else:
+            return "cercano"
+
     # Lógica para calcular la fuerza del disparo de la pelota en relación a la distancia entre el jugador y la portería
     def strength(self):
         dx, dy, l = self.ballDistance()
+        s = self.defuzzify_strength(l)
+        st = random.randint(8, 11) if s == "lejano" else random.randint(5, 7) if s == "medio" else random.randint(2, 4)
+        return st
 
-        # hard kick
-        if l > 200:
-            return 9
-        # medium kick
-        elif l > 100:
-            return 6
-        # soft kick
-        else:
-            return 3
         
     def ballDistance(self):
         dx = self.x_goal - self.x_ball
