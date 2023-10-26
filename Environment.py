@@ -12,7 +12,8 @@ class Environment:
         self.x_player = random.randint(0, self.x_screen)
         self.y_player = random.randint(0, self.y_screen)
         # pelota
-        self.x_ball = random.randint(0, self.x_screen)
+        self.x_ball = random.randint(0, self.x_screen - 100)
+        #self.x_ball = 350
         self.y_ball = random.randint(0, self.y_screen)
         # portería
         self.x_goal = self.x_screen - 10
@@ -39,7 +40,7 @@ class Environment:
             # pos_goal = (self.x_goal, self.y_goal, 10, 10)
             # pygame.draw.rect(screen, "black", pos_goal, 5)
             dx, dy, l = self.ballDistance()
-            if l > 2:
+            if l > 5:
 
                 pos_goal = (self.x_goal, self.y_goal, 10, 100)
                 pygame.draw.rect(screen, "white", pos_goal, 2)
@@ -100,6 +101,7 @@ class Environment:
     def kick(self, strength):
         # calcular la fuerza del disparo - Debe ser por default al menos tan rápido como el máximo del jugador o más, sino el jugador alcanza la pelota y la patea repetidamente a cada rato
         s = strength
+        print(' - ', s)
         self.kicked = True
         # calcular la dirección del disparo - esto puede ser fijo, pues sabemos siempre dónde está la portería
         dx, dy, l = self.ballDistance()
@@ -119,13 +121,13 @@ class Environment:
 
         # hard kick
         if l > 200:
-            return 7
+            return 9
         # medium kick
         elif l > 100:
             return 6
         # soft kick
         else:
-            return 5
+            return 3
         
     def ballDistance(self):
         dx = self.x_goal - self.x_ball
