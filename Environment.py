@@ -1,9 +1,30 @@
 import pygame
 import random
 import math
+import matplotlib.pyplot as plt
+import numpy as np
 
 class Environment:
     def __init__(self) -> None:
+        # Configuración de Matplotlib para las funciones de pertenencia
+        plt.ion()
+
+        # Gráficos para la distancia
+        self.fig_distance, self.ax_distance = plt.subplots()
+        self.ax_distance.set_title('Función de Pertenencia para Distancia')
+        self.ax_distance.set_xlabel('Distancia')
+        self.ax_distance.set_ylabel('Pertenencia')
+        self.line_distance, = self.ax_distance.plot([], [], label='Pertenencia')
+        self.ax_distance.legend()
+
+        # Gráficos para la fuerza
+        self.fig_strength, self.ax_strength = plt.subplots()
+        self.ax_strength.set_title('Función de Pertenencia para Fuerza')
+        self.ax_strength.set_xlabel('Fuerza')
+        self.ax_strength.set_ylabel('Pertenencia')
+        self.bar_strength = self.ax_strength.bar([], [], label='Pertenencia', color='orange')
+        self.ax_strength.legend()
+
         # inicialización de variables necesarias
         #pantalla
         self.x_screen = 400
@@ -24,6 +45,9 @@ class Environment:
 
         # setup de pygame
         pygame.init()
+
+        # Configuración de Matplotlib para las funciones de pertenencia
+        plt.ion()  # Habilitar modo interactivo para actualizar gráficos en tiempo real
 
         screen = pygame.display.set_mode((self.x_screen, self.y_screen))
         clock = pygame.time.Clock()
@@ -55,16 +79,12 @@ class Environment:
 
                 clock.tick(60)
                 self.diffuse()
-
             else:
                 running = False
-
-
-
-            
-
+            self.update_membership_functions()
 
         pygame.quit()
+        plt.show(block="False")
 
 
     def diffuse(self):
@@ -75,6 +95,8 @@ class Environment:
         else:
             # patear la pelota en dirección a la portería
             self.kick(self.s)
+            # Actualizar gráficos de funciones de pertenencia
+            
             pass
 
     
@@ -83,6 +105,15 @@ class Environment:
         y2, y1 = self.y_ball, self.y_player
         return math.sqrt((x2-x1)**2 + (y2-y1)**2)
     
+    def defuzzify_distance(self, distance):
+        
+        if distance > 100:
+            return "lejano"
+        elif 30 < distance <= 100:
+            return "medio"
+        else:
+            return "cercano"
+        
     def Move(self):
         dx = self.x_ball - self.x_player
         dy = self.y_ball - self.y_player
@@ -91,10 +122,28 @@ class Environment:
         if l > 0:
             dx = dx/l
             dy = dy/l
+        
+        # utilizar el valor en la funcion de defuzzificacion
+        v = self.defuzzify_distance(l)
 
-        v = random.randint(2,4)
+        print("distancia", l)
+        print("velocidad: ", v)
+
+
+        if v == "lejano":
+            v = random.randint(5,7)
+        
+        if v == "medio":
+            v = random.randint(2,4)
+        
+        if v == "cercano":
+            v = random.randint(1,2)
+        
+        
         self.x_player += v*dx
         self.y_player += v*dy
+
+        return v
 
 
     # Desencadena el movimiento de la pelota
@@ -135,3 +184,28 @@ class Environment:
 
         l = math.sqrt(dx**2 + dy**2)
         return dx, dy, l
+
+    def update_membership_functions(self):
+        # Obtener datos para graficar
+        dx, dy, distance = self.ballDistance()
+        print("distance: ", distance)
+
+        # Actualizar gráfico de distancia
+        x_vals = np.linspace(0, 300, 100)
+        y_vals = [self.defuzzify_distance(d) for d in x_vals]
+        self.line_distance.set_xdata(x_vals)
+        self.line_distance.set_ydata(y_vals)
+        self.ax_distance.relim()
+        self.ax_distance.autoscale_view()
+
+        # Actualizar gráfico de fuerza
+        # labels = ['lejano', 'medio', 'cercano']
+        # y_vals_strength = [9, 6, 3]
+        # for bar, val in zip(self.bar_strength, y_vals_strength):
+        #     bar.set_height(val)
+        # self.ax_strength.relim()
+        # self.ax_strength.autoscale_view()
+
+        # Actualizar gráficos
+        self.fig_distance.canvas.draw_idle()
+        self.fig_strength.canvas.draw_idle()
