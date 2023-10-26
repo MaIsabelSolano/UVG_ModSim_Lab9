@@ -9,22 +9,6 @@ class Environment:
         # Configuración de Matplotlib para las funciones de pertenencia
         plt.ion()
 
-        # Gráficos para la distancia
-        self.fig_distance, self.ax_distance = plt.subplots()
-        self.ax_distance.set_title('Función de Pertenencia para Distancia')
-        self.ax_distance.set_xlabel('Distancia')
-        self.ax_distance.set_ylabel('Pertenencia')
-        self.line_distance, = self.ax_distance.plot([], [], label='Pertenencia')
-        self.ax_distance.legend()
-
-        # Gráficos para la fuerza
-        self.fig_strength, self.ax_strength = plt.subplots()
-        self.ax_strength.set_title('Función de Pertenencia para Fuerza')
-        self.ax_strength.set_xlabel('Fuerza')
-        self.ax_strength.set_ylabel('Pertenencia')
-        self.bar_strength = self.ax_strength.bar([], [], label='Pertenencia', color='orange')
-        self.ax_strength.legend()
-
         # inicialización de variables necesarias
         #pantalla
         self.x_screen = 400
@@ -81,7 +65,6 @@ class Environment:
                 self.diffuse()
             else:
                 running = False
-            self.update_membership_functions()
 
         pygame.quit()
         plt.show(block="False")
@@ -184,28 +167,3 @@ class Environment:
 
         l = math.sqrt(dx**2 + dy**2)
         return dx, dy, l
-
-    def update_membership_functions(self):
-        # Obtener datos para graficar
-        dx, dy, distance = self.ballDistance()
-        print("distance: ", distance)
-
-        # Actualizar gráfico de distancia
-        # x_vals = np.linspace(0, 300, 100)
-        # y_vals = [self.defuzzify_distance(d) for d in x_vals]
-        # self.line_distance.set_xdata(x_vals)
-        # self.line_distance.set_ydata(y_vals)
-        # self.ax_distance.relim()
-        # self.ax_distance.autoscale_view()
-
-        # Actualizar gráfico de fuerza
-        # labels = ['lejano', 'medio', 'cercano']
-        # y_vals_strength = [9, 6, 3]
-        # for bar, val in zip(self.bar_strength, y_vals_strength):
-        #     bar.set_height(val)
-        # self.ax_strength.relim()
-        # self.ax_strength.autoscale_view()
-
-        # Actualizar gráficos
-        self.fig_distance.canvas.draw_idle()
-        self.fig_strength.canvas.draw_idle()
