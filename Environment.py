@@ -18,10 +18,8 @@ class Environment:
         self.x_goal = self.x_screen - 10
         self.y_goal = self.y_screen/2 - 50
 
-        self.xf_ball = self.x_ball
-        self.yf_ball = self.y_ball
-
-
+        self.s = self.strength()
+        self.kicked = False
 
         # setup de pygame
         pygame.init()
@@ -40,21 +38,28 @@ class Environment:
 
             # pos_goal = (self.x_goal, self.y_goal, 10, 10)
             # pygame.draw.rect(screen, "black", pos_goal, 5)
-            pos_goal = (self.x_goal, self.y_goal, 10, 100)
-            pygame.draw.rect(screen, "white", pos_goal, 2)
-            
-            pos_ball = pygame.Vector2(self.x_ball, self.y_ball)
-            pygame.draw.circle(screen, "red", pos_ball, 5)
+            dx, dy, l = self.ballDistance()
+            if l > 2:
 
-            pos_player = (self.x_player, self.y_player, 15, 15)
-            pygame.draw.rect(screen, "black", pos_player, 2)
+                pos_goal = (self.x_goal, self.y_goal, 10, 100)
+                pygame.draw.rect(screen, "white", pos_goal, 2)
+                
+                pos_ball = pygame.Vector2(self.x_ball, self.y_ball)
+                pygame.draw.circle(screen, "red", pos_ball, 5)
 
-            pygame.display.flip()
+                pos_player = (self.x_player, self.y_player, 15, 15)
+                pygame.draw.rect(screen, "black", pos_player, 2)
 
-            clock.tick(60)
-            self.diffuse()
-            if self.x_ball != self.xf_ball or self.y_ball != self.yf_ball:
-                self.moveBall()
+                pygame.display.flip()
+
+                clock.tick(60)
+                self.diffuse()
+
+            else:
+                running = False
+
+
+
             
 
 
@@ -64,11 +69,11 @@ class Environment:
     def diffuse(self):
         d = self.distance()
 
-        if d > 5:
+        if d > 5 and not self.kicked:
             self.Move()
         else:
             # patear la pelota en dirección a la portería
-            # self.kick()
+            self.kick(self.s)
             pass
 
     
@@ -86,22 +91,45 @@ class Environment:
             dx = dx/l
             dy = dy/l
 
-        v = random.randint(3,5)
+        v = random.randint(2,4)
         self.x_player += v*dx
         self.y_player += v*dy
 
 
-    # Lógica para animar el movimiento de la pelota
-    def moveBall(self):
-        pass
-
     # Desencadena el movimiento de la pelota
-    def kick(self):
+    def kick(self, strength):
         # calcular la fuerza del disparo - Debe ser por default al menos tan rápido como el máximo del jugador o más, sino el jugador alcanza la pelota y la patea repetidamente a cada rato
+        s = strength
+        self.kicked = True
         # calcular la dirección del disparo - esto puede ser fijo, pues sabemos siempre dónde está la portería
+        dx, dy, l = self.ballDistance()
+
+        if l > 0:
+            dx = dx/l
+            dy = dy/l
+
+        self.x_ball += s*dx
+        self.y_ball += s*dy
         # imponer las coordenas finales del disparo
         pass
 
     # Lógica para calcular la fuerza del disparo de la pelota en relación a la distancia entre el jugador y la portería
     def strength(self):
-        pass
+        dx, dy, l = self.ballDistance()
+
+        # hard kick
+        if l > 200:
+            return 7
+        # medium kick
+        elif l > 100:
+            return 6
+        # soft kick
+        else:
+            return 5
+        
+    def ballDistance(self):
+        dx = self.x_goal - self.x_ball
+        dy = (self.y_goal + 50) - self.y_ball
+
+        l = math.sqrt(dx**2 + dy**2)
+        return dx, dy, l
