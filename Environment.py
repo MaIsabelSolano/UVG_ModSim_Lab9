@@ -191,12 +191,12 @@ class Environment:
         print("distance: ", distance)
 
         # Actualizar gráfico de distancia
-        x_vals = np.linspace(0, 300, 100)
-        y_vals = [self.defuzzify_distance(d) for d in x_vals]
-        self.line_distance.set_xdata(x_vals)
-        self.line_distance.set_ydata(y_vals)
-        self.ax_distance.relim()
-        self.ax_distance.autoscale_view()
+        # x_vals = np.linspace(0, 300, 100)
+        # y_vals = [self.defuzzify_distance(d) for d in x_vals]
+        # self.line_distance.set_xdata(x_vals)
+        # self.line_distance.set_ydata(y_vals)
+        # self.ax_distance.relim()
+        # self.ax_distance.autoscale_view()
 
         # Actualizar gráfico de fuerza
         # labels = ['lejano', 'medio', 'cercano']
